@@ -1,4 +1,5 @@
 import GitManager from '@lib/git';
+import { SavedRepository } from '@lib/git/commandExec';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -7,5 +8,9 @@ export class WebhookService {
 
     gitPull(repoName: string) {
         return this.GitManager.pull(repoName);
+    }
+
+    getSavedRepository(repoName: string): SavedRepository | undefined {
+        return this.GitManager.savedRepository[repoName];
     }
 }

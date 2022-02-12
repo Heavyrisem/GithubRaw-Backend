@@ -7,6 +7,8 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@lib(|/.*)$": "<rootDir>/lib/$1"
+    "^@lib(|/.*)$": "<rootDir>/lib/$1",
+    "^src(|/.*)$": "<rootDir>/$1",
+    "^decorator(|/.*)$": "<rootDir>/decorator/$1"
   }
 }

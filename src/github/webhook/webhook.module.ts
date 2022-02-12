@@ -6,7 +6,7 @@ import { WebhookService } from './webhook.service';
 @Module({
     imports: [
         GithubWebhooksModule.forRoot({
-            webhookSecret: 'SECRETDATA',
+            webhookSecret: process.env.GIT_WEBHOOK_SECRET,
         }),
     ],
     controllers: [WebhookController],

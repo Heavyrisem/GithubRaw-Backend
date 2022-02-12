@@ -18,11 +18,14 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@lib": [
-        "lib"
-      ],
       "@lib/*": [
         "lib/*"
+      ],
+      "@src/*": [
+        "src/*"
+      ],
+      "@decorator/*": [
+        "decorator/*"
       ]
     }
   },

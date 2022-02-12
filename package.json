@@ -77,7 +77,9 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@lib(|/.*)$": "<rootDir>/lib/$1"
+      "^@lib(|/.*)$": "<rootDir>/lib/$1",
+      "^@src(|/.*)$": "<rootDir>/src/$1",
+      "^@decorator(|/.*)$": "<rootDir>/decorator/$1"
     }
   }
 }
