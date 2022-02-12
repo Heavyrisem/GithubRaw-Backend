@@ -3,5 +3,6 @@ import { IncomingMessage } from 'http';
 
 export const Path = createParamDecorator((data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<IncomingMessage>();
-    return request.url.split(data).pop();
+    const result = '.' + request.url.split(data).pop();
+    return result;
 });

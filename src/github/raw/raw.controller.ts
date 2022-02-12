@@ -1,6 +1,6 @@
 import { ResponseDto } from '@lib/common-config/response.dto';
 import { Controller, Get, HttpStatus, Post } from '@nestjs/common';
-import { Path } from 'decorator/path.decorator';
+import { Path } from '@decorator/path.decorator';
 import { normalize } from 'path';
 import { RawService } from './raw.service';
 
