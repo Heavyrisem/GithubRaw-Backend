@@ -28,13 +28,13 @@ class GitManager {
         }
     }
 
-    pull(repoName: string): boolean {
+    pull(repoName: string): boolean | string {
         const repo = this.savedRepository[repoName];
 
-        if (repo) {
+        try {
             return PullCommand(repo);
-        } else {
-            return false;
+        } catch (err) {
+            return err;
         }
     }
 
