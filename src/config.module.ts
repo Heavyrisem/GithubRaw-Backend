@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 
+const _REPO = '[{"URL":"https://github.com/Heavyrisem/GithubRaw-Backend", "BRANCH": "master"}]';
 const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
     let object: string;
     try {
@@ -33,7 +34,8 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
             validationSchema: Joi.object({
                 NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
                 PORT: Joi.number().default(3000),
-                GIT_REPOS: GIT_REPOS_SCHEMA,
+                GIT_REPOS: GIT_REPOS_SCHEMA.default(_REPO),
+                GIT_ROOT: Joi.string().default('./GithubRepos'),
             }),
         }),
     ],
