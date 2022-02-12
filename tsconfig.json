@@ -16,6 +16,22 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@lib": [
+        "lib"
+      ],
+      "@lib/*": [
+        "lib/*"
+      ]
+    }
+  },
+  "include": [
+    "decorator",
+    "lib",
+    "src"
+  ],
+  "exclude": [
+    "testGithub"
+  ]
 }

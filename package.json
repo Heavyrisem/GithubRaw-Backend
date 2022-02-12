@@ -63,7 +63,10 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "roots": [
+      "src",
+      "lib"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -72,6 +75,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@lib(|/.*)$": "<rootDir>/lib/$1"
+    }
   }
 }
