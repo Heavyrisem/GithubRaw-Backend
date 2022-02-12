@@ -33,6 +33,7 @@ export function CloneCommand(URL: string, PATH: string, BRANCH = 'master') {
 }
 
 export function PullCommand(REPO: SavedRepository) {
+    if (process.env.NODE_ENV !== 'prod') return true;
     const resetArgs = ['reset', '--hard', 'HEAD'];
     ExecuteCommand('git', resetArgs, { cwd: REPO.PATH });
 
