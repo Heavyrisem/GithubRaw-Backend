@@ -12,28 +12,23 @@ export interface SavedRepository extends BaseRepository {
     PATH: string;
 }
 
-export function CloneCommand(URL: string, PATH: string, BRANCH = 'master') {
+export function CloneCommand(URL: string, PATH: string, BRANCH = 'master'): SavedRepository {
     const REPO: SavedRepository = {
         BRANCH: BRANCH || 'master',
-        NAME: parse(URL).name,
+        NAME: GetRepoNameFromURL(URL),
         PATH,
         URL,
     };
 
     const args = ['clone', REPO.URL, '-b', REPO.BRANCH, '--single-branch'];
+    ExecuteCommand('git', args, { cwd: resolve(REPO.PATH) });
 
-    const ps = ExecuteCommand('git', args, {
-        cwd: resolve(REPO.PATH),
-    });
-
-    return {
-        ...REPO,
-        output: ps.output,
-    };
+    return REPO;
 }
 
 export function PullCommand(REPO: SavedRepository) {
-    if (process.env.NODE_ENV !== 'prod') return true;
+    if (process.env.NODE_ENV !== 'prod') return Boolean(REPO);
+
     const resetArgs = ['reset', '--hard', 'HEAD'];
     ExecuteCommand('git', resetArgs, { cwd: REPO.PATH });
 
@@ -42,6 +37,8 @@ export function PullCommand(REPO: SavedRepository) {
 
     return true;
 }
+
+export const GetRepoNameFromURL = (URL: string) => parse(URL).base;
 
 function ExecuteCommand(command: string, args: string[], options: SpawnSyncOptions) {
     const ps = sync(command, args, options);

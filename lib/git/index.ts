@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import * as fs from 'fs';
 import * as Path from 'path';
 import { BaseRepository, CloneCommand, PullCommand, SavedRepository } from './commandExec';
 
@@ -11,16 +11,13 @@ class GitManager {
 
     constructor(private repoList: BaseRepository[], private root: string) {
         this.root = Path.resolve(root);
-        this.init();
-    }
 
-    async init() {
-        const rootExist = await this.existDir(this.root);
+        const rootExist = this.existDir(this.root);
 
         if (rootExist) {
-            await fs.rm(this.root, { recursive: true, force: true });
+            fs.rmSync(this.root, { recursive: true, force: true });
         }
-        await fs.mkdir(this.root);
+        fs.mkdirSync(this.root);
 
         for (const REPO of this.repoList) {
             const repo = CloneCommand(REPO.URL, this.root);
@@ -39,10 +36,7 @@ class GitManager {
     }
 
     private async existDir(path: string) {
-        return fs
-            .stat(path)
-            .then((stat) => stat.isDirectory())
-            .catch(() => false);
+        return fs.statSync(path).isDirectory();
     }
 }
 
