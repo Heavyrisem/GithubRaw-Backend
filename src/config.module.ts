@@ -23,7 +23,7 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
     if (result.error) {
         throw result.error;
     }
-    return object;
+    return value;
 }).required();
 @Module({
     imports: [
