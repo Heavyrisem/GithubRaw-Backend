@@ -36,7 +36,11 @@ class GitManager {
     }
 
     private async existDir(path: string) {
-        return fs.statSync(path).isDirectory();
+        try {
+            return fs.statSync(path).isDirectory();
+        } catch (err) {
+            return false;
+        }
     }
 }
 
