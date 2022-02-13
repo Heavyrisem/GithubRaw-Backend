@@ -6,13 +6,14 @@ import { ConfigurationModule } from '@src/config.module';
 import { RawService } from './raw.service';
 
 describe('RawController', () => {
+    let module: TestingModule;
     let controller: RawController;
 
     const dummytext = 'dummy text for file';
-    const filename = '/controllerDummyfile';
+    const filename = './controllerDummyfile';
 
     beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [ConfigurationModule],
             controllers: [RawController],
             providers: [RawService],
@@ -22,11 +23,12 @@ describe('RawController', () => {
     });
 
     afterAll(async () => {
-        await fs.unlink(normalize(resolve(process.env.GIT_ROOT) + filename));
+        await fs.unlink(resolve(process.env.GIT_ROOT, filename));
+        module.close();
     });
 
     it('/raw read test', async () => {
-        await fs.writeFile(normalize(resolve(process.env.GIT_ROOT) + filename), dummytext);
+        await fs.writeFile(resolve(process.env.GIT_ROOT, filename), dummytext);
         const readresult = await controller.readRawFile(filename);
 
         expect(readresult).toBe(`<pre>${dummytext}</pre>`);

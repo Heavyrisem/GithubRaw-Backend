@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RawService } from './raw.service';
 import * as fs from 'fs/promises';
-import { normalize, resolve } from 'path';
+import { resolve } from 'path';
 import { ConfigurationModule } from '@src/config.module';
 
 describe('RawService', () => {
+    let module: TestingModule;
     let service: RawService;
 
     const dummytext = 'dummy text for file';
-    const filename = '/serviceDummyfile';
+    const filename = './serviceDummyfile';
 
     beforeAll(async () => {
-        const module: TestingModule = await Test.createTestingModule({
+        module = await Test.createTestingModule({
             imports: [ConfigurationModule],
             providers: [RawService],
         }).compile();
@@ -20,11 +21,12 @@ describe('RawService', () => {
     });
 
     afterAll(async () => {
-        await fs.unlink(normalize(resolve(process.env.GIT_ROOT) + filename));
+        await fs.unlink(resolve(process.env.GIT_ROOT, filename));
+        module.close();
     });
 
     it('file read test', async () => {
-        await fs.writeFile(normalize(resolve(process.env.GIT_ROOT) + filename), dummytext);
+        await fs.writeFile(resolve(process.env.GIT_ROOT, filename), dummytext);
         const readresult = await service.readFile(filename);
 
         expect(readresult).toBe(dummytext);
