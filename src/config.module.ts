@@ -29,8 +29,6 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
 const GIT_ROOT_SCHEMA = Joi.custom((value) => {
     const schema = Joi.string().default('./GithubRepos');
 
-    console.log(schema.validate(value).value);
-
     return schema.validate(value).value + (process.env.NODE_ENV === 'test')
         ? '_' + Math.random().toString(36).substring(2, 11)
         : '';
@@ -44,8 +42,9 @@ const GIT_ROOT_SCHEMA = Joi.custom((value) => {
             validationSchema: Joi.object({
                 NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
                 PORT: Joi.number().default(3000),
-                GIT_REPOS: GIT_REPOS_SCHEMA.default(_REPO),
-                GIT_ROOT: GIT_ROOT_SCHEMA,
+                GIT_REPOS: GIT_REPOS_SCHEMA.required().default(_REPO),
+                GIT_ROOT: GIT_ROOT_SCHEMA.required(),
+                GIT_WEBHOOK_SECRET: Joi.string().required(),
             }),
         }),
     ],

@@ -21,10 +21,10 @@ describe('Webhook', () => {
         beforeAll(async () => {
             const module: TestingModule = await Test.createTestingModule({
                 imports: [
+                    ConfigurationModule,
                     GithubWebhooksModule.forRoot({
                         webhookSecret: process.env.GIT_WEBHOOK_SECRET,
                     }),
-                    ConfigurationModule,
                 ],
                 controllers: [WebhookController],
                 providers: [WebhookService],
