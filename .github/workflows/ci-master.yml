@@ -4,6 +4,7 @@ on:
   push:
     branches: [ master ]
 env:
+  DOCKER_NAME: github-raw-backend
   DOCKER_IMAGE: ghcr.io/heavyrisem/github-raw-backend
   VERSION: ${{ github.sha }}
 
@@ -42,7 +43,7 @@ jobs:
     steps:
       -   name: Clean up docker images
           run: |
-            docker ps -q --filter "name=NotionKakao_Server" | grep -q . && docker stop NotionKakao_Server && docker rm -fv NotionKakao_Server
+            docker ps -q --filter "name=${{ env.DOCKER_NAME }}" | grep -q . && docker stop ${{ env.DOCKER_NAME }} && docker rm -fv ${{ env.DOCKER_NAME }}
             runningImages=$(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q)
             if [ ! -z $runningImages ]; then docker rmi $(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q); fi
             
@@ -104,5 +105,5 @@ jobs:
           
       - name: Docker run
         run:
-          docker run -d -p 8001:3000 --name Github-Raw-Backend --env-file=.env --restart always ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
+          docker run -d -p 8001:3000 --name ${{ env.DOCKER_NAME }} --env-file=.env --restart always ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
           
