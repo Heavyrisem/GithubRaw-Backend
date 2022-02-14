@@ -43,7 +43,9 @@ jobs:
       -   name: Clean up docker images
           run: |
             docker ps -q --filter "name=NotionKakao_Server" | grep -q . && docker stop NotionKakao_Server && docker rm -fv NotionKakao_Server
-            docker rmi $(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q)
+            runningImages=$(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q)
+            if [ ! -z $runningImages ]; then docker rmi $(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q); fi
+            
 
   build:
     needs: cleanup
