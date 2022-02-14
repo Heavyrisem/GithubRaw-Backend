@@ -363,6 +363,11 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
+"@dev-thought/nestjs-github-webhooks@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@dev-thought/nestjs-github-webhooks/-/nestjs-github-webhooks-1.0.0.tgz#e6ea6a1a431089932c067fe7e4af337e0b62c303"
+  integrity sha512-7hzM/gbYyJfocJQzwQJ8isfYPyaJKr8Wg0GQwlYK+1uwNgdh665wDuv0WSd34jNh8PeI6GKhSw/errwdS52YWw==
+
 "@eslint/eslintrc@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.0.5.tgz#33f1b838dbf1f923bfa517e008362b78ddbbf318"
