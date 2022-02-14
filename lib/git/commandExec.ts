@@ -44,6 +44,7 @@ function ExecuteCommand(command: string, args: string[], options: SpawnSyncOptio
     const ps = sync(command, args, options);
 
     if (ps.error) {
+        console.log(ps);
         throw ps.error;
     } else if (ps.status !== 0) {
         throw new Error(`Non-zero Exit Code: ${ps.status}, ${command} ${args.join(' ')}`);

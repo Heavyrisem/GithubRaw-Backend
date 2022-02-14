@@ -11,7 +11,8 @@ export class WebhookController {
     @UseGuards(GithubGuard)
     @GithubWebhookEvents(['push'])
     @Post()
-    withRestrictedGithubEvents(@Body('repository') repository: PushRepositoryDto) {
+    withRestrictedGithubEvents(@Body('ref') ref: string, @Body('repository') repository: PushRepositoryDto) {
+        // TODO: ref 확인해서 목표 브랜치가 아니라면 무시
         const pullResult = this.webhookService.gitPull(repository.name);
 
         if (pullResult === true) {
