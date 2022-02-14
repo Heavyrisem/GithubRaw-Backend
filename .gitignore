@@ -39,4 +39,4 @@ lerna-debug.log*
 
 .test
 testGithub
-GithubRepos
+GithubRepos*

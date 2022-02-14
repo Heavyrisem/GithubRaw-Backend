@@ -8,8 +8,13 @@ import { resolve } from 'path';
 import { PushRepositoryDto } from './dto/push-repository.dto';
 import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
+import * as fs from 'fs/promises';
 
 describe('Webhook', () => {
+    afterAll(async () => {
+        await fs.rm(resolve(process.env.GIT_ROOT), { recursive: true, force: true });
+    });
+
     describe('WebhookController', () => {
         let controller: WebhookController;
 

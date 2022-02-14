@@ -26,6 +26,14 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
     }
     return value;
 }).required();
+const GIT_ROOT_SCHEMA = Joi.custom((value) => {
+    const schema = Joi.string().default('./GithubRepos');
+
+    return schema.validate(value).value + (process.env.NODE_ENV === 'test')
+        ? '_' + Math.random().toString(36).substring(2, 11)
+        : '';
+});
+
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -35,7 +43,7 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
                 NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
                 PORT: Joi.number().default(3000),
                 GIT_REPOS: GIT_REPOS_SCHEMA.default(_REPO),
-                GIT_ROOT: Joi.string().default('./GithubRepos'),
+                GIT_ROOT: GIT_ROOT_SCHEMA,
             }),
         }),
     ],
