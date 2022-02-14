@@ -21,7 +21,7 @@ jobs:
   test:
   
     # Runner가 실행되는 환경을 정의하는 부분입니다.
-    runs-on: ubnutu-latest
+    runs-on: [ self-hosted, github-raw-backend-runner ]
 
     # build Job 내의 step 목록입니다.
     steps:
