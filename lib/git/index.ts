@@ -42,6 +42,14 @@ class GitManager {
             return false;
         }
     }
+
+    // FIXME: GitManager.instance
+    static getManager(options: ConstructorParameters<typeof GitManager>) {
+        if (!GitManager.prototype) {
+            GitManager.prototype = new GitManager(...options);
+        }
+        return GitManager.prototype;
+    }
 }
 
-export default GitManager;
+export default GitManager.getManager;

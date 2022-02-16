@@ -4,27 +4,30 @@ import * as fs from 'fs/promises';
 import { resolve } from 'path';
 import { ConfigurationModule } from '@src/config.module';
 import { RawService } from './raw.service';
-import { WebhookService } from '../webhook/webhook.service';
+import { WebhookModule } from '../webhook/webhook.module';
 
 describe('Raw', () => {
+    let module: TestingModule;
+
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [ConfigurationModule, WebhookModule],
+            controllers: [RawController],
+            providers: [RawService],
+        }).compile();
+    });
+
     afterAll(async () => {
         await fs.rm(resolve(process.env.GIT_ROOT), { recursive: true, force: true });
     });
 
     describe('RawController', () => {
-        let module: TestingModule;
         let controller: RawController;
 
         const dummytext = 'dummy text for file';
         const filename = './controllerDummyfile';
 
         beforeAll(async () => {
-            module = await Test.createTestingModule({
-                imports: [ConfigurationModule, WebhookService],
-                controllers: [RawController],
-                providers: [RawService],
-            }).compile();
-
             controller = module.get<RawController>(RawController);
         });
 
@@ -42,18 +45,12 @@ describe('Raw', () => {
     });
 
     describe('RawService', () => {
-        let module: TestingModule;
         let service: RawService;
 
         const dummytext = 'dummy text for file';
         const filename = './serviceDummyfile';
 
         beforeAll(async () => {
-            module = await Test.createTestingModule({
-                imports: [ConfigurationModule, WebhookService],
-                providers: [RawService],
-            }).compile();
-
             service = module.get<RawService>(RawService);
         });
 

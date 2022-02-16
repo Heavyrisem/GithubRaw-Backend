@@ -4,7 +4,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class WebhookService {
-    private GitManager = new GitManager(JSON.parse(process.env.GIT_REPOS), process.env.GIT_ROOT);
+    // TODO: Module로 분리하여 1회만 실행되도록 변경
+    private GitManager = GitManager([JSON.parse(process.env.GIT_REPOS), process.env.GIT_ROOT]);
+    constructor() {
+        console.log('WebHookService Created', this.GitManager);
+    }
 
     gitPull(repoName: string) {
         return this.GitManager.pull(repoName);

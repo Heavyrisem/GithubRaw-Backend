@@ -27,11 +27,9 @@ const GIT_REPOS_SCHEMA = Joi.custom((value, helpers) => {
     return value;
 }).required();
 const GIT_ROOT_SCHEMA = Joi.custom((value) => {
-    const schema = Joi.string().default('./GithubRepos');
+    const schema = Joi.string().required().default('./GithubRepos');
 
-    return schema.validate(value).value + (process.env.NODE_ENV === 'test')
-        ? '_' + Math.random().toString(36).substring(2, 11)
-        : '';
+    return schema.validate(value).value;
 });
 
 @Module({

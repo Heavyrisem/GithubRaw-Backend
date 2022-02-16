@@ -3,10 +3,16 @@ import { Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import { Path } from '@decorator/path.decorator';
 import { normalize } from 'path';
 import { RawService } from './raw.service';
+import { WebhookService } from '../webhook/webhook.service';
 
 @Controller('raw')
 export class RawController {
-    constructor(private readonly rawService: RawService) {}
+    constructor(readonly rawService: RawService, readonly webhookService: WebhookService) {}
+
+    @Get('/test')
+    test() {
+        return this.webhookService.getSavedRepository('GithubRaw-Backend');
+    }
 
     @Get('*')
     @Post('*')
