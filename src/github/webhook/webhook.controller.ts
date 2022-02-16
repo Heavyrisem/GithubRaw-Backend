@@ -1,6 +1,7 @@
 import { GithubGuard, GithubWebhookEvents } from '@dev-thought/nestjs-github-webhooks';
 import { ResponseDto } from '@lib/common-config/response.dto';
 import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { PushRefDto } from './dto/push-ref.dto';
 import { PushRepositoryDto } from './dto/push-repository.dto';
 import { WebhookService } from './webhook.service';
 
@@ -11,7 +12,7 @@ export class WebhookController {
     @UseGuards(GithubGuard)
     @GithubWebhookEvents(['push'])
     @Post()
-    withRestrictedGithubEvents(@Body('ref') ref: string, @Body('repository') repository: PushRepositoryDto) {
+    withRestrictedGithubEvents(@Body('ref') ref: PushRefDto, @Body('repository') repository: PushRepositoryDto) {
         // TODO: ref 확인해서 목표 브랜치가 아니라면 무시
         const pullResult = this.webhookService.gitPull(repository.name);
 
