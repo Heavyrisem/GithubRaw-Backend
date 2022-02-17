@@ -8,6 +8,7 @@ interface savedRepository {
 
 class GitManager {
     savedRepository: savedRepository = {};
+    static instance: GitManager;
 
     constructor(private repoList: BaseRepository[], private root: string) {
         this.root = Path.resolve(root);
@@ -42,6 +43,13 @@ class GitManager {
             return false;
         }
     }
+
+    static getManager(options: ConstructorParameters<typeof GitManager>) {
+        if (!GitManager.instance) {
+            GitManager.instance = new GitManager(...options);
+        }
+        return GitManager.instance;
+    }
 }
 
-export default GitManager;
+export default GitManager.getManager;

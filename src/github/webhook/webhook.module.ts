@@ -9,7 +9,8 @@ import { WebhookService } from './webhook.service';
             webhookSecret: process.env.GIT_WEBHOOK_SECRET,
         }),
     ],
-    controllers: [WebhookController],
+    controllers: [],
     providers: [WebhookService],
+    exports: [WebhookService],
 })
 export class WebhookModule {}

@@ -6,7 +6,7 @@ import { RawService } from './raw.service';
 
 @Controller('raw')
 export class RawController {
-    constructor(private readonly rawService: RawService) {}
+    constructor(readonly rawService: RawService) {}
 
     @Get('*')
     @Post('*')

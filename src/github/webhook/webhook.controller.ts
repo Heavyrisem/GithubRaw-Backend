@@ -11,8 +11,18 @@ export class WebhookController {
     @UseGuards(GithubGuard)
     @GithubWebhookEvents(['push'])
     @Post()
-    withRestrictedGithubEvents(@Body('repository') repository: PushRepositoryDto) {
-        const pullResult = this.webhookService.gitPull(repository.name);
+    withRestrictedGithubEvents(@Body('ref') ref: string, @Body('repository') repository: PushRepositoryDto) {
+        const branch = ref.split('refs/heads/').pop();
+        const repo = this.webhookService.getSavedRepository(repository.name);
+
+        if (!repo) {
+            throw ResponseDto.ERROR_WITH(`${repository.name} is not registerd Repository`, HttpStatus.BAD_REQUEST);
+        }
+
+        if (branch !== repo.BRANCH) {
+            throw ResponseDto.ERROR_WITH(`${branch} is not registerd Branch`, HttpStatus.BAD_REQUEST);
+        }
+        const pullResult = this.webhookService.gitPull(repo.NAME);
 
         if (pullResult === true) {
             return ResponseDto.OK();
