@@ -99,6 +99,7 @@ jobs:
 
       - name: initialize environments
         run: |
+            rm -rf .env
             echo 'GIT_REPOS=${{ secrets.GIT_REPOS }}' >> .env
             echo GIT_WEBHOOK_SECRET=${{ secrets.GIT_WEBHOOK_SECRET }} >> .env
             echo GIT_ROOT=${{ secrets.GIT_ROOT }} >> .env

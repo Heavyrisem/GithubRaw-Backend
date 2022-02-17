@@ -9,9 +9,24 @@ import { PushRepositoryDto } from './dto/push-repository.dto';
 import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
 import * as fs from 'fs/promises';
-import { PushRefDto } from './dto/push-ref.dto';
+import { WebhookModule } from './webhook.module';
 
 describe('Webhook', () => {
+    let module: TestingModule;
+
+    beforeAll(async () => {
+        module = await Test.createTestingModule({
+            imports: [
+                ConfigurationModule,
+                GithubWebhooksModule.forRoot({
+                    webhookSecret: process.env.GIT_WEBHOOK_SECRET,
+                }),
+                WebhookModule,
+            ],
+            controllers: [WebhookController],
+        }).compile();
+    });
+
     afterAll(async () => {
         await fs.rm(resolve(process.env.GIT_ROOT), { recursive: true, force: true });
     });
@@ -20,24 +35,11 @@ describe('Webhook', () => {
         let controller: WebhookController;
 
         beforeAll(async () => {
-            const module: TestingModule = await Test.createTestingModule({
-                imports: [
-                    ConfigurationModule,
-                    GithubWebhooksModule.forRoot({
-                        webhookSecret: process.env.GIT_WEBHOOK_SECRET,
-                    }),
-                ],
-                controllers: [WebhookController],
-                providers: [WebhookService],
-            }).compile();
-
             controller = module.get<WebhookController>(WebhookController);
         });
 
         it('/webhook test', () => {
-            const testRefDto = {
-                ref: 'refs/heads/master',
-            };
+            const testRef = 'refs/heads/master';
             const testRepositoryDto = {
                 id: 458268058,
                 node_id: 'R_kgDOG1Cdmg',
@@ -45,9 +47,8 @@ describe('Webhook', () => {
                 full_name: 'Heavyrisem/GithubRaw-Backend',
                 private: false,
             };
-            const refDto = plainToInstance(PushRefDto, testRefDto);
             const repositoryDto = plainToInstance(PushRepositoryDto, testRepositoryDto);
-            expect(controller.withRestrictedGithubEvents(refDto, repositoryDto)).toStrictEqual(ResponseDto.OK());
+            expect(controller.withRestrictedGithubEvents(testRef, repositoryDto)).toStrictEqual(ResponseDto.OK());
         });
     });
 
@@ -55,11 +56,6 @@ describe('Webhook', () => {
         let service: WebhookService;
 
         beforeAll(async () => {
-            const module: TestingModule = await Test.createTestingModule({
-                imports: [ConfigurationModule],
-                providers: [WebhookService],
-            }).compile();
-
             service = module.get<WebhookService>(WebhookService);
         });
 
