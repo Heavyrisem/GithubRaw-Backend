@@ -24,9 +24,6 @@ class GitManager {
             const repo = CloneCommand(REPO.URL, this.root);
             this.savedRepository[repo.NAME] = repo;
         }
-
-        GitManager.instance = this;
-        console.log('GitManager Created');
     }
 
     pull(repoName: string): boolean | string {
@@ -47,7 +44,6 @@ class GitManager {
         }
     }
 
-    // FIXME: GitManager.instance
     static getManager(options: ConstructorParameters<typeof GitManager>) {
         if (!GitManager.instance) {
             GitManager.instance = new GitManager(...options);

@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { RawService } from './raw.service';
 import { RawController } from './raw.controller';
-import { WebhookModule } from '../webhook/webhook.module';
 
 @Module({
-    imports: [WebhookModule],
+    imports: [],
     providers: [RawService],
     controllers: [RawController],
 })

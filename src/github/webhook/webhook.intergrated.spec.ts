@@ -9,7 +9,6 @@ import { PushRepositoryDto } from './dto/push-repository.dto';
 import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
 import * as fs from 'fs/promises';
-import { PushRefDto } from './dto/push-ref.dto';
 import { WebhookModule } from './webhook.module';
 
 describe('Webhook', () => {
@@ -40,9 +39,7 @@ describe('Webhook', () => {
         });
 
         it('/webhook test', () => {
-            const testRefDto = {
-                ref: 'refs/heads/master',
-            };
+            const testRef = 'refs/heads/master';
             const testRepositoryDto = {
                 id: 458268058,
                 node_id: 'R_kgDOG1Cdmg',
@@ -50,9 +47,8 @@ describe('Webhook', () => {
                 full_name: 'Heavyrisem/GithubRaw-Backend',
                 private: false,
             };
-            const refDto = plainToInstance(PushRefDto, testRefDto);
             const repositoryDto = plainToInstance(PushRepositoryDto, testRepositoryDto);
-            expect(controller.withRestrictedGithubEvents(refDto, repositoryDto)).toStrictEqual(ResponseDto.OK());
+            expect(controller.withRestrictedGithubEvents(testRef, repositoryDto)).toStrictEqual(ResponseDto.OK());
         });
     });
 
