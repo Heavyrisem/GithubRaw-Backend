@@ -9,6 +9,8 @@ env:
 
 jobs:
     test:
+      name: test
+      runs-on: ubuntu-latest
         - name: send message
           uses: appleboy/discord-action@master
           with:
