@@ -8,6 +8,7 @@ interface savedRepository {
 
 class GitManager {
     savedRepository: savedRepository = {};
+    static instance: GitManager;
 
     constructor(private repoList: BaseRepository[], private root: string) {
         this.root = Path.resolve(root);
@@ -23,6 +24,9 @@ class GitManager {
             const repo = CloneCommand(REPO.URL, this.root);
             this.savedRepository[repo.NAME] = repo;
         }
+
+        GitManager.instance = this;
+        console.log('GitManager Created');
     }
 
     pull(repoName: string): boolean | string {
@@ -45,10 +49,10 @@ class GitManager {
 
     // FIXME: GitManager.instance
     static getManager(options: ConstructorParameters<typeof GitManager>) {
-        if (!GitManager.prototype) {
-            GitManager.prototype = new GitManager(...options);
+        if (!GitManager.instance) {
+            GitManager.instance = new GitManager(...options);
         }
-        return GitManager.prototype;
+        return GitManager.instance;
     }
 }
 
