@@ -1,26 +1,88 @@
 name: discord message
 on:
-    # 하단 코드에 따라 develop 브랜치에 Push 또는 Pull Request 이벤트가 발생한 경우에 Workflow가 실행됩니다.
-    # 만약 브랜치 구분 없이 이벤트를 지정하고 싶을 경우에는 단순히 아래와 같이 작성도 가능합니다.
-    # on: [push, pull_request]
     push:
-        branches: [develop]
-    pull_request:
-        branches: [develop]
-
-    # 해당 옵션을 통해 사용자가 직접 Actions 탭에서 Workflow를 실행시킬 수 있습니다.
-    # 여기에서는 추가적으로 더 설명하지는 않겠습니다.
+        tags:
+            - v*
     workflow_dispatch:
 
 jobs:
+    cleanup:
+        name: Clean up docker images
+        runs-on: [self-hosted, github-raw-backend-runner]
+        steps:
+            - name: Clean up docker images
+              run: |
+                  docker ps -q --filter "name=${{ env.DOCKER_NAME }}" | grep -q . && docker stop ${{ env.DOCKER_NAME }} && docker rm -fv ${{ env.DOCKER_NAME }}
+                  runningImages=$(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q)
+                  if [ ! -z $runningImages ]; then docker rmi $(docker images --filter=reference="${{ env.DOCKER_IMAGE }}:*" --format {{.ID}} -q); fi
+
     build:
+        needs: cleanup
         name: Build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@master
-            - name: send custom message with args
-              uses: appleboy/discord-action@master
+            - name: Check out source code
+              uses: actions/checkout@v2
+
+            - name: Set up docker buildx
+              id: buildx
+              uses: docker/setup-buildx-action@v1
+
+            - name: Cache docker layers
+              uses: actions/cache@v2
               with:
-                  webhook_id: ${{ secrets.WEBHOOK_ID }}
-                  webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-                  args: The ${{ github.event_name }} event triggered first step.
+                  path: /tmp/.buildx-cache
+                  key: ${{ runner.os }}-buildx-${{ env.VERSION }}
+                  restore-keys: |
+                      ${{ runner.os }}-buildx-
+
+            - name: Login to ghcr
+              uses: docker/login-action@v1
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GHCR_PAT }}
+
+            - name: Build and push
+              id: docker_build
+              uses: docker/build-push-action@v2
+              with:
+                  builder: ${{ steps.buildx.outputs.name }}
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
+
+    deploy:
+        needs: build
+        name: Deploy
+        runs-on: [self-hosted, github-raw-backend-runner]
+        steps:
+            - name: Login to ghcr
+              uses: docker/login-action@v1
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GHCR_PAT }}
+
+            - name: initialize environments
+              run: |
+                  rm -rf .env
+                  echo 'GIT_REPOS=${{ secrets.GIT_REPOS }}' >> .env
+                  echo GIT_WEBHOOK_SECRET=${{ secrets.GIT_WEBHOOK_SECRET }} >> .env
+                  echo GIT_ROOT=${{ secrets.GIT_ROOT }} >> .env
+
+            - name: Docker run
+              run: docker run -d -p 8001:3000 --name ${{ env.DOCKER_NAME }} --env-file=.env --restart always ${{ env.DOCKER_IMAGE }}:${{ env.VERSION }}
+
+    discordMessage:
+        name: Send Message to Discord
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Pushed Tags Version
+              run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+            - name: Discord notification
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+              uses: Ilshidur/action-discord@master
+              with:
+                  args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} ${{ env.RELEASE_VERSION }} has been deployed.'
