@@ -77,7 +77,7 @@ jobs:
                   echo GIT_ROOT=${{ secrets.GIT_ROOT }} >> .env
 
             - name: Docker run
-              run: docker run -d -p 8001:3000 --name ${{ env.DOCKER_NAME }} --env-file=.env --restart always ${{ env.DOCKER_IMAGE }}:${{ env.RELEASE_VERSION }}
+              run: docker run -d -p 8001:3000 --name ${{ env.DOCKER_NAME }} --env-file=.env --restart always ${{ env.DOCKER_IMAGE }}:v1.0.0
 
     discordMessage:
         needs: deploy
