@@ -1,4 +1,4 @@
-name: discord message
+name: Re-Deploy
 on:
     push:
         tags:
