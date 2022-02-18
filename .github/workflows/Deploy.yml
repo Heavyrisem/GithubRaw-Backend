@@ -2,6 +2,7 @@ name: discord message
 on:
     push:
         branches: [develop]
+
     workflow_dispatch:
 
 jobs:
