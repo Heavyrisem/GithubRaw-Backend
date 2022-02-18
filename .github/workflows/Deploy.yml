@@ -1,4 +1,4 @@
-name: discord message
+name: Deploy
 
 on:
   # 하단 코드에 따라 develop 브랜치에 Push 또는 Pull Request 이벤트가 발생한 경우에 Workflow가 실행됩니다.
