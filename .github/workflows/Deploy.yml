@@ -1,4 +1,4 @@
-name: Re-Deploy
+name: Deploy
 on:
     push:
         tags:
