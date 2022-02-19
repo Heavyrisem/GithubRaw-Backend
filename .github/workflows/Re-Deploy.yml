@@ -1,8 +1,9 @@
 name: Re-Deploy
 on:
     workflow_dispatch:
-        input:
+        inputs:
             tags:
+                type: string
                 description: 'Target image version'
                 required: true
 env:
