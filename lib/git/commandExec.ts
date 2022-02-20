@@ -27,8 +27,6 @@ export function CloneCommand(URL: string, PATH: string, BRANCH = 'master'): Save
 }
 
 export function PullCommand(REPO: SavedRepository) {
-    if (process.env.NODE_ENV !== 'prod') return Boolean(REPO);
-
     const resetArgs = ['reset', '--hard', 'HEAD'];
     ExecuteCommand('git', resetArgs, { cwd: REPO.PATH });
 

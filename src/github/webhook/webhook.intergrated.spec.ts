@@ -60,10 +60,11 @@ describe('Webhook', () => {
         });
 
         describe('webhook service test', () => {
+            const testRepoName = GetRepoNameFromURL((JSON.parse(process.env.GIT_REPOS).shift() as BaseRepository).URL);
             const testRepository: SavedRepository = {
                 ...(JSON.parse(process.env.GIT_REPOS).shift() as BaseRepository),
-                PATH: resolve(process.env.GIT_ROOT),
-                NAME: GetRepoNameFromURL((JSON.parse(process.env.GIT_REPOS).shift() as BaseRepository).URL),
+                PATH: resolve(process.env.GIT_ROOT, testRepoName),
+                NAME: testRepoName,
             };
             let savedRepository: SavedRepository;
 
