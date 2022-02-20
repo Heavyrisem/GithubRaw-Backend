@@ -1,5 +1,5 @@
 import { ResponseDto } from '@lib/common-config/response.dto';
-import { Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { All, Controller, HttpStatus } from '@nestjs/common';
 import { Path } from '@decorator/path.decorator';
 import { normalize } from 'path';
 import { RawService } from './raw.service';
@@ -8,8 +8,7 @@ import { RawService } from './raw.service';
 export class RawController {
     constructor(readonly rawService: RawService) {}
 
-    @Get('*')
-    @Post('*')
+    @All('*')
     async readRawFile(@Path('/raw') path: string) {
         const parsedPath = normalize(path);
         const raw = await this.rawService.readFile(parsedPath).catch((err) => {
