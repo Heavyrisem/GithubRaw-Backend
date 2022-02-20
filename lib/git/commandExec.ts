@@ -16,12 +16,12 @@ export function CloneCommand(URL: string, PATH: string, BRANCH = 'master'): Save
     const REPO: SavedRepository = {
         BRANCH: BRANCH || 'master',
         NAME: GetRepoNameFromURL(URL),
-        PATH,
+        PATH: resolve(PATH, GetRepoNameFromURL(URL)),
         URL,
     };
 
     const args = ['clone', REPO.URL, '-b', REPO.BRANCH, '--single-branch'];
-    ExecuteCommand('git', args, { cwd: resolve(REPO.PATH) });
+    ExecuteCommand('git', args, { cwd: resolve(PATH) });
 
     return REPO;
 }
@@ -41,10 +41,11 @@ export function PullCommand(REPO: SavedRepository) {
 export const GetRepoNameFromURL = (URL: string) => parse(URL).base;
 
 function ExecuteCommand(command: string, args: string[], options: SpawnSyncOptions) {
+    console.log('Running command:', [command, args.join(' ')].join(' '), options);
     const ps = sync(command, args, options);
 
     if (ps.error) {
-        console.log(ps);
+        console.log(ps.error);
         throw ps.error;
     } else if (ps.status !== 0) {
         throw new Error(`Non-zero Exit Code: ${ps.status}, ${command} ${args.join(' ')}`);
